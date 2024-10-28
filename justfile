@@ -10,3 +10,9 @@ compile:
 
 publish_ghcr:
   docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/simonneutert/unreachable_tiles_map_editor:main --push .
+
+lint:
+  deno lint --ignore=static
+
+format:
+  deno fmt --ignore=static --ignore=*.md
