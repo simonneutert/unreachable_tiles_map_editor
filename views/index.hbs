@@ -1,0 +1,107 @@
+<div class="container my-4">
+  <div class="text-center">
+    <h1><small>A simple map editor for unreachable tiles</small></h1>
+    <p>
+      👋 This tool is here to help you create a set of unreachable tiles for an area.<br>
+      You can define these areas simply by clicking on the map.<br>
+      The tiles you define will be saved in a JSON file and can be submitted/added to the existing set of unreachable
+      tiles.
+    </p>
+  </div>
+  <div class="row justify-content-md-center my-4">
+    <div class="col col-12 col-xl-7">
+      <div class="card border-primary my-4">
+        <div class="card-header">
+          <h4>
+            Privacy notice / Cookie consent
+          </h4>
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">You must accept technical cookies to be allowed to proceed!</h4>
+          <p>
+            This project uses the 3rd party service Mapbox to display the map. By clicking the button below, you
+            accept
+            the use of technical cookies. You allow this app to interact with the Mapbox service, with all the
+            implications that come with it. This may include tracking your usage of the map, as well as other
+            data,
+            like
+            your IP address.
+          </p>
+          <p>
+            You will be asked for your position to center the map on your location. This is an optional feature
+            and
+            you
+            can deny the request, of course.
+          </p>
+          <form action="/accept-cookies" method="post">
+            <button type="submit" class="btn btn-outline-primary" onclick="confirmMapbox()">
+              I accept, take me to the app! 🚀
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-12 col-md-6">
+      <img src="/img/screenshot_app.webp" width="100%">
+    </div>
+    <div class="col col-12 col-md-6">
+      <div class="card border-primary">
+        <div class="card-header">
+          <h4>FAQ</h4>
+        </div>
+        <div class="card-body">
+          <section>
+            <h4>What is this?</h4>
+            <p>
+              This is a tool to help you create a set of unreachable tiles for an area.
+            </p>
+          </section>
+          <section>
+            <h4>What's the purpose?</h4>
+            <p>
+              Exploring the world tile by tile is fun, yet there are areas you cannot reach. This tool helps you
+              visualize
+              these areas. You can define them click by click.
+            </p>
+          </section>
+          <section>
+            <h4>What is unreachable?</h4>
+            <p>
+              <strong>It's about permissions or legal restrictions.</strong>
+              Just because you only track bike rides, it doesn't mean you could walk, swin or boat somewhere.
+            </p>
+            <p>
+              Unreachable means that something isn't publicly accessible. It could be a private property, a military
+              area
+              or
+              a
+              nature reserve. Or any other reason why the public is not allowed to enter (👽🛸).
+            </p>
+          </section>
+          <section>
+            <h4>There are some areas defined already, why can't I change them?</h4>
+            <p>
+              This project is hosted for our purpose. The areas defined as unreachable
+              are matching our needs. If you need to define your own areas, you can visit the
+              <a href="https://github.com/simonneutert/unreachable_tiles_editor">project on GitHub</a>
+              and deploy your own instance.
+            </p>
+            <p>
+              Just edit the <code>unreachable_tiles.json</code> file and run/deploy the project for yourself.
+            </p>
+          </section>
+        </div>
+      </div>
+    </div>
+    <script>
+      function confirmMapbox() {
+        const msg = 'I understand 3rd party services and cookies are used in this project. And I accept it.'
+        if (!confirm(msg)) {
+          event.preventDefault();
+        }
+      }
+    </script>
+  </div>
+</div>

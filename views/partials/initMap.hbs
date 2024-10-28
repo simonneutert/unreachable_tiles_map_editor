@@ -1,0 +1,149 @@
+<script>
+  async function initMap(map) {
+    map.on("click", (e) => {
+      const { lng, lat } = e.lngLat;
+      const tile = globalThis.UNREACHABLETILES.lonlat2tile(
+        lng,
+        lat,
+        globalThis.UNREACHABLETILES.currentTileZoom,
+      );
+
+      if (
+        globalThis.UNREACHABLETILES
+          .userTiles[`${globalThis.UNREACHABLETILES.currentTileZoom}`] === undefined
+      ) {
+        globalThis.UNREACHABLETILES.userTiles[
+          `${globalThis.UNREACHABLETILES.currentTileZoom}`
+        ] = new Set();
+      }
+
+      if (
+        globalThis.UNREACHABLETILES.userTiles[
+          `${globalThis.UNREACHABLETILES.currentTileZoom}`
+        ].has(`${tile.x},${tile.y}`)
+      ) {
+        globalThis.UNREACHABLETILES.userTiles[
+          `${globalThis.UNREACHABLETILES.currentTileZoom}`
+        ].delete(`${tile.x},${tile.y}`);
+
+        globalThis.UNREACHABLETILES.mapRenderUserTiles(
+          map,
+          Array.from(
+            globalThis.UNREACHABLETILES.userTiles[
+            `${globalThis.UNREACHABLETILES.currentTileZoom}`
+            ],
+          ).map((tile) => {
+            const [x, y] = tile.split(",");
+            return { x: parseInt(x), y: parseInt(y) };
+          }),
+          globalThis.UNREACHABLETILES.currentTileZoom,
+        );
+      } else if (
+        !globalThis.UNREACHABLETILES.tiles[
+          `${globalThis.UNREACHABLETILES.currentTileZoom}`
+        ].has(`${tile.x},${tile.y}`)
+      ) {
+        globalThis.UNREACHABLETILES.userTiles[
+          `${globalThis.UNREACHABLETILES.currentTileZoom}`
+        ].add(`${tile.x},${tile.y}`);
+
+        globalThis.UNREACHABLETILES.mapRenderUserTiles(
+          map,
+          Array.from(
+            globalThis.UNREACHABLETILES.userTiles[
+            `${globalThis.UNREACHABLETILES.currentTileZoom}`
+            ],
+          ).map((tile) => {
+            const [x, y] = tile.split(",");
+            return { x: parseInt(x), y: parseInt(y) };
+          }),
+          globalThis.UNREACHABLETILES.currentTileZoom,
+        );
+      } else if (
+        globalThis.UNREACHABLETILES.tiles[
+          `${globalThis.UNREACHABLETILES.currentTileZoom}`
+        ].has(`${tile.x},${tile.y}`)
+      ) {
+        alert(`Tile x: ${tile.x}, y: ${tile.y}, z: ${globalThis.UNREACHABLETILES.currentTileZoom
+          } is defined unreachable`);
+      }
+      updateForm();
+    });
+
+    map.on("load", () => {
+      globalThis.UNREACHABLETILES.tiles = globalThis.UNREACHABLETILES.tiles || {};
+      globalThis.UNREACHABLETILES.userTiles = globalThis.UNREACHABLETILES.userTiles ||
+        {};
+
+      globalThis.UNREACHABLETILES.getData("/tiles").then(
+        (data) => {
+          globalThis.UNREACHABLETILES.data = data;
+
+          const areaTiles = data.map((area) => area.tiles_by_zoom);
+          for (const zoomTiles of areaTiles) {
+            for (const zoom in zoomTiles) {
+              if (!globalThis.UNREACHABLETILES.tiles[`${zoom}`]) {
+                globalThis.UNREACHABLETILES.tiles[`${zoom}`] = new Set();
+              }
+              zoomTiles[zoom].forEach((tile) => {
+                globalThis.UNREACHABLETILES.tiles[`${zoom}`].add(
+                  `${tile.x},${tile.y}`,
+                );
+              });
+            }
+          }
+
+          const filteredTiles = areaTiles.filter((area) =>
+            area[globalThis.UNREACHABLETILES.currentTileZoom]
+          ).map((area) => area[globalThis.UNREACHABLETILES.currentTileZoom]).flat();
+
+          globalThis.UNREACHABLETILES.mapRenderTiles(
+            map,
+            filteredTiles,
+            globalThis.UNREACHABLETILES.currentTileZoom,
+          );
+        },
+      );
+    });
+  }
+
+  // initialize the mapbox map
+
+  var map;
+  var mapboxApiKey = "{{ mapboxApiSecret }}";
+  function success(position) {
+    mapboxgl.accessToken = mapboxApiKey;
+    map = new mapboxgl.Map({
+      container: "map",
+      center: [position.coords.longitude, position.coords.latitude],
+      zoom: 9,
+    });
+    initMap(map);
+  }
+
+  function error() {
+    mapboxgl.accessToken = mapboxApiKey;
+    map = new mapboxgl.Map({
+      container: "map", // container ID
+      center: [8.45, 49.9], // starting position [lng, lat]. Note that lat must be set between -90 and 90
+      zoom: 9, // starting zoom
+    });
+    initMap(map);
+  }
+
+  const options = {
+    enableHighAccuracy: true,
+    maximumAge: 30000,
+    timeout: 27000,
+  };
+
+  if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(
+      success,
+      error,
+      options,
+    );
+  } else {
+    error();
+  }
+</script>

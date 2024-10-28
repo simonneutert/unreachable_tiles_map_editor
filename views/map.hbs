@@ -1,0 +1,241 @@
+<style>
+  #map {
+    width: 100%;
+    height: 80vh;
+    max-height: 660px;
+  }
+</style>
+<div class="container my-4">
+  <h1>
+    Unreachable Tiles Map Editor
+  </h1>
+  <hr />
+  <div class="text-center">
+    <p>
+      <strong>
+        Start by filling form, then click on the map to add tiles to the area.
+      </strong>
+    </p>
+  </div>
+  <div class="row">
+    <div class="col-12 col-lg-9">
+      <div id="map"></div>
+      <div class="my-2">
+        <label>Change the tile size:</label>
+        <div class="btn-group">
+          <a id="tile13" href="#" class="btn btn-primary">13</a>
+          <a id="tile14" href="#" class="btn btn-primary active">14</a>
+          <a id="tile15" href="#" class="btn btn-primary">15</a>
+          <a id="tile16" href="#" class="btn btn-primary">16</a>
+        </div>
+        <div>
+          <small>previously set tiles will be kept in memory!</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-3">
+      {{> areaForm}}
+    </div>
+  </div>
+</div>
+
+{{> buttonsScripts}}
+{{> initMap }}
+<script>
+  window = window || {};
+  globalThis.UNREACHABLETILES = globalThis.UNREACHABLETILES || {};
+  globalThis.UNREACHABLETILES.currentTileZoom = 14;
+
+  globalThis.UNREACHABLETILES.getData = async function (url) {
+    const response = await fetch(url);
+    return await response.json();
+  };
+
+  globalThis.UNREACHABLETILES.tile2poly = function (x, y, z) {
+    const tile2long = globalThis.UNREACHABLETILES.tile2long;
+    const tile2lat = globalThis.UNREACHABLETILES.tile2lat;
+
+    return [
+      [tile2long(x, z), tile2lat(y, z)],
+      [tile2long(x + 1, z), tile2lat(y, z)],
+      [tile2long(x + 1, z), tile2lat(y + 1, z)],
+      [tile2long(x, z), tile2lat(y + 1, z)],
+      [tile2long(x, z), tile2lat(y, z)],
+    ];
+  };
+
+  globalThis.UNREACHABLETILES.tile2polyLeftUpperCorner = function (x, y, z) {
+    const tile2long = globalThis.UNREACHABLETILES.tile2long;
+    const tile2lat = globalThis.UNREACHABLETILES.tile2lat;
+
+    return [tile2long(x, z), tile2lat(y, z)];
+  };
+
+  globalThis.UNREACHABLETILES.tile2long = function (x, z) {
+    return (x / Math.pow(2, z)) * 360 - 180;
+  };
+  globalThis.UNREACHABLETILES.tile2lat = function (y, z) {
+    const n = Math.PI - (2 * Math.PI * y) / Math.pow(2, z);
+
+    return (180 / Math.PI) * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
+  };
+
+  globalThis.UNREACHABLETILES.tile2lonlat = function (x, y, z) {
+    return {
+      lon: globalThis.UNREACHABLETILES.tile2long(x, z),
+      lat: globalThis.UNREACHABLETILES.tile2lat(y, z),
+    };
+  };
+
+  globalThis.UNREACHABLETILES.lon2tile = function (lon, zoom) {
+    return Math.floor(((lon + 180) / 360) * Math.pow(2, zoom));
+  };
+
+  globalThis.UNREACHABLETILES.lat2tile = function (lat, zoom) {
+    return Math.floor(
+      ((1 -
+        Math.log(
+          Math.tan((lat * Math.PI) / 180) +
+          1 / Math.cos((lat * Math.PI) / 180),
+        ) /
+        Math.PI) /
+        2) *
+      Math.pow(2, zoom),
+    );
+  };
+
+  globalThis.UNREACHABLETILES.lonlat2tile = function (lon, lat, zoom) {
+    return {
+      x: globalThis.UNREACHABLETILES.lon2tile(lon, zoom),
+      y: globalThis.UNREACHABLETILES.lat2tile(lat, zoom),
+    };
+  };
+
+  globalThis.UNREACHABLETILES.COLORS = {
+    RED: "#DC267F",
+    BLUE: "#648FFF",
+    ORANGE: "#FE6100",
+    YELLOW: "#FFB000",
+    PURPLE: "#785EF0",
+  };
+
+  globalThis.UNREACHABLETILES.mapRenderUserTiles = function (map, tiles, zoom) {
+    if (map.getSource(`userTilesUnreachable`)) {
+      map.removeLayer(`userTilesUnreachableFill`);
+      map.removeLayer(`userTilesUnreachableOutline`);
+      map.removeSource(`userTilesUnreachable`);
+    }
+
+    map.addSource(`userTilesUnreachable`, {
+      type: "geojson",
+      data: {
+        type: "FeatureCollection",
+        features: tiles.map((tile) => {
+          return {
+            type: "Feature",
+            geometry: {
+              type: "Polygon",
+              coordinates: [
+                globalThis.UNREACHABLETILES.tile2poly(tile.x, tile.y, zoom),
+              ],
+            },
+          };
+        }),
+      },
+    });
+
+    map.addLayer({
+      id: `userTilesUnreachableFill`,
+      type: "fill",
+      source: `userTilesUnreachable`,
+      paint: {
+        "fill-color": globalThis.UNREACHABLETILES.COLORS.ORANGE,
+        "fill-opacity": 0.5,
+      },
+      filter: ["==", "$type", "Polygon"],
+    });
+
+    map.addLayer({
+      id: `userTilesUnreachableOutline`,
+      type: "line",
+      source: `userTilesUnreachable`,
+      layout: {},
+      paint: {
+        "line-color": globalThis.UNREACHABLETILES.COLORS.ORANGE,
+        // "line-width": 0.25,
+        "line-opacity": 0.5,
+        "line-width": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          1,
+          0.25,
+          13,
+          0.2,
+          15,
+          0.15,
+        ],
+      },
+    });
+  };
+
+  globalThis.UNREACHABLETILES.mapRenderTiles = function (map, tiles, zoom) {
+    if (map.getSource(`tilesUnreachable`)) {
+      map.removeLayer(`tilesUnreachableFill`);
+      map.removeLayer(`tilesUnreachableOutline`);
+      map.removeSource(`tilesUnreachable`);
+    }
+
+    map.addSource(`tilesUnreachable`, {
+      type: "geojson",
+      data: {
+        type: "FeatureCollection",
+        features: tiles.map((tile) => {
+          return {
+            type: "Feature",
+            geometry: {
+              type: "Polygon",
+              coordinates: [
+                globalThis.UNREACHABLETILES.tile2poly(tile.x, tile.y, zoom),
+              ],
+            },
+          };
+        }),
+      },
+    });
+
+    map.addLayer({
+      id: `tilesUnreachableFill`,
+      type: "fill",
+      source: `tilesUnreachable`,
+      paint: {
+        "fill-color": "red",
+        "fill-opacity": 0.5,
+      },
+      filter: ["==", "$type", "Polygon"],
+    });
+
+    map.addLayer({
+      id: `tilesUnreachableOutline`,
+      type: "line",
+      source: `tilesUnreachable`,
+      layout: {},
+      paint: {
+        "line-color": globalThis.UNREACHABLETILES.COLORS.RED,
+        // "line-width": 0.25,
+        "line-opacity": 0.5,
+        "line-width": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          1,
+          0.25,
+          13,
+          0.2,
+          15,
+          0.15,
+        ],
+      },
+    });
+  };
+</script>

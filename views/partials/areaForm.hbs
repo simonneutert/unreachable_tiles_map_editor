@@ -1,0 +1,95 @@
+<div class="form-control">
+  <p>
+  </p>
+  <form>
+    <div class="mb-4">
+      <label for="areaName" class="form-label">Area name:</label>
+      <input id="areaName" class="form-control" type="text" placeholder="Area Name" />
+    </div>
+    <div class="mb-4">
+      <label for="city" class="form-label">City:</label>
+      <input id="city" class="form-control" type="text" placeholder="City" />
+    </div>
+    <div class="mb-4">
+      <label for="country" class="form-label">Country:</label>
+      <input id="country" class="form-control" type="text" placeholder="Country" />
+    </div>
+    <div class="mb-4">
+      <label for="tilesJson" class="form-label">Area description:</label>
+      <textarea id="tilesJson" class="form-control" rows="10" placeholder="Tiles" readonly></textarea>
+    </div>
+    <div class="btn-group">
+      <div class="btn btn-danger" onclick="clearMap()">Clear 💣</div>
+      <div class="btn btn-primary" onclick="copyJsonToClipboard()">Copy to clipboard 📋</div>
+    </div>
+  </form>
+</div>
+<script>
+  function resetFormInputs() {
+    document.getElementById("areaName").value = "";
+    document.getElementById("city").value = "";
+    document.getElementById("country").value = "";
+    document.getElementById("tilesJson").innerHTML = "";
+  }
+
+  function clearMap() {
+    resetFormInputs();
+    globalThis.UNREACHABLETILES.userTiles = {};
+    updateForm();
+    globalThis.UNREACHABLETILES.mapRenderUserTiles(
+      map,
+      [],
+      globalThis.UNREACHABLETILES.currentTileZoom
+    );
+  }
+
+  async function copyJsonToClipboard() {
+    const json = document.getElementById("tilesJson").value;
+    await writeClipboardText(json);
+  }
+
+  async function writeClipboardText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  function jsonPretty(jsonString) {
+    return JSON.stringify(JSON.parse(jsonString), null, 2)
+  }
+
+  function constructJson(name, city, country, tiles) {
+    const jsonString = JSON.stringify({
+      name,
+      city,
+      country,
+      tiles_by_zoom: tiles,
+    });
+    return jsonPretty(jsonString);
+  }
+
+  function updateForm() {
+    const areaName = document.getElementById("areaName").value;
+    const city = document.getElementById("city").value;
+    const country = document.getElementById("country").value;
+    const jsonTextArea = document.getElementById("tilesJson");
+    jsonTextArea.innerHTML = ""; // Clear the text area
+
+    const tilesForJson = {};
+    for (const zoom in globalThis.UNREACHABLETILES.userTiles) {
+      const tiles_by_zoom = globalThis.UNREACHABLETILES.userTiles[zoom];
+      tilesForJson[zoom] = Array.from(tiles_by_zoom).map((tile) => {
+        const [x, y] = tile.split(",");
+        const tileJson = {
+          x: parseInt(x),
+          y: parseInt(y),
+        };
+        return tileJson;
+      });
+    }
+    const prettyJson = constructJson(areaName, city, country, tilesForJson);
+    jsonTextArea.innerHTML = prettyJson
+  }
+</script>

@@ -1,0 +1,52 @@
+<script>
+  const buttons = [
+    document.getElementById("tile13"),
+    document.getElementById("tile14"),
+    document.getElementById("tile15"),
+    document.getElementById("tile16"),
+  ];
+  buttons.forEach((button) => {
+    button.addEventListener("click", (e) => {
+      buttons.forEach((button) => {
+        button.classList.remove("active");
+      });
+      e.target.classList.add("active");
+      e.preventDefault();
+      const currentTileZoom = parseInt(e.target.innerText);
+      globalThis.UNREACHABLETILES.currentTileZoom = currentTileZoom;
+      let tiles = globalThis.UNREACHABLETILES.tiles[`${currentTileZoom}`];
+
+      tiles = Array.from(tiles).map((tile) => {
+        const [x, y] = tile.split(",");
+        return { x: parseInt(x), y: parseInt(y) };
+      });
+
+      globalThis.UNREACHABLETILES.mapRenderTiles(
+        map,
+        tiles,
+        currentTileZoom,
+      );
+
+      let userTiles = [];
+      if (
+        globalThis.UNREACHABLETILES.userTiles[
+        `${currentTileZoom}`
+        ]
+      ) {
+        userTiles = Array.from(
+          globalThis.UNREACHABLETILES.userTiles[
+          `${currentTileZoom}`
+          ],
+        ).map((tile) => {
+          const [x, y] = tile.split(",");
+          return { x: parseInt(x), y: parseInt(y) };
+        }) || [];
+      }
+      globalThis.UNREACHABLETILES.mapRenderUserTiles(
+        map,
+        userTiles,
+        currentTileZoom,
+      );
+    });
+  });
+</script>
