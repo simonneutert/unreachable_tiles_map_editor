@@ -1,7 +1,11 @@
 import { Handlebars } from "jsr:@danet/handlebars";
 import { Application, Router } from "jsr:@oak/oak@14";
 
-import file from "./data/unreachable_tiles.json" with { type: "json" };
+const unreachableTilesData = [];
+for await (const dirEntry of Deno.readDir("./data/")) {
+  const content = await Deno.readTextFile(`./data/${dirEntry.name}`);
+  unreachableTilesData.push(JSON.parse(content));
+}
 
 const app = new Application();
 const router = new Router();
@@ -39,7 +43,7 @@ router.get("/map", async function (ctx) {
 });
 
 router.get("/tiles", function (ctx) {
-  ctx.response.body = file;
+  ctx.response.body = unreachableTilesData;
 });
 
 app.use(router.routes());

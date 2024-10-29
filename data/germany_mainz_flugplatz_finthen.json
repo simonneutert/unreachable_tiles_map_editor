@@ -1,0 +1,13 @@
+{
+  "name": "Flugplatz Mainz-Finthen",
+  "city": "Mainz",
+  "country": "Germany",
+  "tiles_by_zoom": {
+    "16": [
+      {
+        "x": 34251,
+        "y": 22235
+      }
+    ]
+  }
+}
