@@ -3,12 +3,6 @@
   "city": "Wiebaden",
   "country": "Germany",
   "tiles_by_zoom": {
-    "15": [
-      {
-        "x": 17141,
-        "y": 11106
-      }
-    ],
     "16": [
       {
         "x": 34282,
