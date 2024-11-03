@@ -1,11 +1,10 @@
 {
-    "name": "Boehringer Ingelheim Werksgelände",
-    "city": "Ingelheim am Rhein",
-    "country": "Germany",
-    "tiles_by_zoom": 
-    {
-        "16": [
-            {"x":34232, "y": 22232}
-        ]
-    }
+  "name": "Boehringer Ingelheim Werksgelände",
+  "city": "Ingelheim am Rhein",
+  "country": "Germany",
+  "tiles_by_zoom": {
+    "16": [
+      { "x": 34232, "y": 22232 }
+    ]
+  }
 }

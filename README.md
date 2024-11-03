@@ -1,20 +1,23 @@
 # Unreachable Tiles Map Editor
 
-This is a simple map editor to track unreachable tiles on a map (mercator projection).  
-It is built with Deno and Oak, and uses Handlebars for templating.  
+This is a simple map editor to track unreachable tiles on a map (mercator
+projection).\
+It is built with Deno and Oak, and uses Handlebars for templating.\
 You will need a Mapbox API key to run this project.
 
-> [!NOTE]  
-> No tests were written for this project.  
-> The main goal was to learn how to use [Deno](https://deno.com) (and [Oak](https://github.com/oakserver/oak)) and run on a VPS.  
-> As the feature set is small, I decided to skip the tests for now.  
+> [!NOTE]\
+> No tests were written for this project.\
+> The main goal was to learn how to use [Deno](https://deno.com) (and
+> [Oak](https://github.com/oakserver/oak)) and run on a VPS.\
+> As the feature set is small, I decided to skip the tests for now.\
 > Good enough software ships faster than perfect software. 🤙 #yoco
 
 ![](./static/img/screenshot_app.webp)
 
 ## Data format / JSON Schema
 
-The json data for this project is a simple structure, with the bare minimum to represent the unreachable tiles.
+The json data for this project is a simple structure, with the bare minimum to
+represent the unreachable tiles.
 
 Supported tile zooms are 13, 14, 15, 16.
 
@@ -63,7 +66,8 @@ Example:
 
 ### Backend
 
-- Oak v14 (because Deno docs suggested it - [hono🔥](https://hono.dev) has to wait)
+- Oak v14 (because Deno docs suggested it - [hono🔥](https://hono.dev) has to
+  wait)
 
 ### Frontend
 
@@ -78,9 +82,11 @@ Example:
 <details>
 <summary>Show instructions</summary>
 
-You need to have a Mapbox API key to run this project. You can get one [here](https://www.mapbox.com/).
+You need to have a Mapbox API key to run this project. You can get one
+[here](https://www.mapbox.com/).
 
-Copy the `.env.init` file to `.env` and set the `MAPBOX_API_SECRET` variable with your API key.
+Copy the `.env.init` file to `.env` and set the `MAPBOX_API_SECRET` variable
+with your API key.
 
 ```bash
 $ deno run --allow-net --allow-read --allow-env server.js
@@ -103,11 +109,12 @@ $ docker run --rm -p 8000:8000 --env-file .env unreachable-tiles-map-editor
 <summary>Show Features</summary>
 
 - [x] Renders Mapbox map
-- [x] Users can interact with the map, adding additional polygons of unreachable tiles
+- [x] Users can interact with the map, adding additional polygons of unreachable
+      tiles
 - [x] Edit unreachable tiles in multiple tile sizes
-- [x] Render json data in a form 
+- [x] Render json data in a form
 - [x] reset form and map
-- [x] copy generated json data to clipboard 
+- [x] copy generated json data to clipboard
 
 </details>
 
@@ -132,9 +139,12 @@ $ docker run --rm -p 8000:8000 --env-file .env unreachable-tiles-map-editor
 
 ### Technical Contributions
 
-Feel free to contribute to this project. I suggest you to open an issue describing the feature you want to implement or the bug you found and wait for feedback before starting to code.
+Feel free to contribute to this project. I suggest you to open an issue
+describing the feature you want to implement or the bug you found and wait for
+feedback before starting to code.
 
-Forking this repository and submitting a pull request is the preferred way to contribute.
+Forking this repository and submitting a pull request is the preferred way to
+contribute.
 
 #### Wishes
 
