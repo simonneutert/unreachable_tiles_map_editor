@@ -4,23 +4,26 @@
   <form>
     <div class="mb-4">
       <label for="areaName" class="form-label">Area name:</label>
-      <input id="areaName" class="form-control" type="text" placeholder="Area Name" />
+      <input id="areaName" class="form-control" type="text" placeholder="Area Name" onkeyup="updateForm()" />
     </div>
     <div class="mb-4">
       <label for="city" class="form-label">City:</label>
-      <input id="city" class="form-control" type="text" placeholder="City" />
+      <input id="city" class="form-control" type="text" placeholder="City" onkeyup="updateForm()" />
     </div>
     <div class="mb-4">
       <label for="country" class="form-label">Country:</label>
-      <input id="country" class="form-control" type="text" placeholder="Country" />
+      <input id="country" class="form-control" type="text" placeholder="Country" onkeyup="updateForm()" />
     </div>
     <div class="mb-4">
       <label for="tilesJson" class="form-label">Area description:</label>
-      <textarea id="tilesJson" class="form-control" rows="10" placeholder="Tiles" ondblclick="renderJson()"></textarea>
+      <textarea id="tilesJson" class="form-control" rows="10" placeholder="Tiles"></textarea>
+    </div>
+    <div class="my-4">
     </div>
     <div class="btn-group">
-      <div class="btn btn-danger" onclick="clearMap()">Clear 💣</div>
-      <div class="btn btn-primary" onclick="copyJsonToClipboard()">Copy to clipboard 📋</div>
+      <div class="btn btn-sm btn-danger" onclick="clearMap()">Clear 💣</div>
+      <div class="btn btn-sm btn-primary" onclick="copyJsonToClipboard()">Copy to clipboard 📋</div>
+      <div class="btn btn-outline-primary btn-sm" onclick="renderJson()">Render pasted JSON 🗺️</div>
     </div>
   </form>
 </div>
@@ -28,27 +31,31 @@
   function renderJson() {
     const json = document.getElementById("tilesJson").value;
     const parsedJson = JSON.parse(json);
+    let { name, city, country, tiles_by_zoom } = parsedJson;
     clearMap();
-    const { name, city, country, tiles_by_zoom } = parsedJson;
+
     document.getElementById("areaName").value = name;
     document.getElementById("city").value = city;
     document.getElementById("country").value = country;
-    globalThis.UNREACHABLETILES.userTiles = {};
+
     for (const zoom in tiles_by_zoom) {
       const tiles = tiles_by_zoom[zoom];
-      globalThis.UNREACHABLETILES.userTiles[zoom] = [];
+      globalThis.UNREACHABLETILES.userTiles[zoom] = new Set();
       for (const tile of tiles) {
         const { x, y } = tile;
-        globalThis.UNREACHABLETILES.userTiles[zoom].push({ x: x, y: y });
+        globalThis.UNREACHABLETILES.userTiles[zoom].add(`${x},${y}`);
       }
     }
-    const areaName = document.getElementById("areaName").value;
-    const city = document.getElementById("city").value;
-    const country = document.getElementById("country").value;
 
+    updateForm()
+    const newUserTiles = []
+    Array.from(globalThis.UNREACHABLETILES?.userTiles[globalThis.UNREACHABLETILES.currentTileZoom] || []).forEach((tile) => {
+      const [x, y] = tile.split(",");
+      newUserTiles.push({ x: parseInt(x), y: parseInt(y) });
+    });
     globalThis.UNREACHABLETILES.mapRenderUserTiles(
       map,
-      globalThis.UNREACHABLETILES.userTiles,
+      newUserTiles,
       globalThis.UNREACHABLETILES.currentTileZoom
     );
   }
@@ -118,6 +125,6 @@
       });
     }
     const prettyJson = constructJson(areaName, city, country, tilesForJson);
-    jsonTextArea.innerHTML = prettyJson
+    jsonTextArea.value = prettyJson;
   }
 </script>
