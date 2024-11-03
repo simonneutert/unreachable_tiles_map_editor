@@ -3,7 +3,16 @@
   "city": "Frankfurt am Main",
   "country": "Germany",
   "tiles_by_zoom": {
-    "15": [],
+    "15": [
+      {
+        "x": 17160,
+        "y": 11100
+      },
+      {
+        "x": 17161,
+        "y": 11100
+      }
+    ],
     "16": [
       {
         "x": 34320,
