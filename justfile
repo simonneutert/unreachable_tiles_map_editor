@@ -1,3 +1,6 @@
+dev:
+  deno run --allow-net --allow-read --allow-env --watch server.js
+
 run:
   deno run --allow-net --allow-read --allow-env server.js
 

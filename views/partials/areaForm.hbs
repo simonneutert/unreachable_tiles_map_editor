@@ -16,7 +16,7 @@
     </div>
     <div class="mb-4">
       <label for="tilesJson" class="form-label">Area description:</label>
-      <textarea id="tilesJson" class="form-control" rows="10" placeholder="Tiles" readonly></textarea>
+      <textarea id="tilesJson" class="form-control" rows="10" placeholder="Tiles" ondblclick="renderJson()"></textarea>
     </div>
     <div class="btn-group">
       <div class="btn btn-danger" onclick="clearMap()">Clear 💣</div>
@@ -25,6 +25,34 @@
   </form>
 </div>
 <script>
+  function renderJson() {
+    const json = document.getElementById("tilesJson").value;
+    const parsedJson = JSON.parse(json);
+    clearMap();
+    const { name, city, country, tiles_by_zoom } = parsedJson;
+    document.getElementById("areaName").value = name;
+    document.getElementById("city").value = city;
+    document.getElementById("country").value = country;
+    globalThis.UNREACHABLETILES.userTiles = {};
+    for (const zoom in tiles_by_zoom) {
+      const tiles = tiles_by_zoom[zoom];
+      globalThis.UNREACHABLETILES.userTiles[zoom] = [];
+      for (const tile of tiles) {
+        const { x, y } = tile;
+        globalThis.UNREACHABLETILES.userTiles[zoom].push({ x: x, y: y });
+      }
+    }
+    const areaName = document.getElementById("areaName").value;
+    const city = document.getElementById("city").value;
+    const country = document.getElementById("country").value;
+
+    globalThis.UNREACHABLETILES.mapRenderUserTiles(
+      map,
+      globalThis.UNREACHABLETILES.userTiles,
+      globalThis.UNREACHABLETILES.currentTileZoom
+    );
+  }
+
   function resetFormInputs() {
     document.getElementById("areaName").value = "";
     document.getElementById("city").value = "";
