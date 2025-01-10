@@ -1,0 +1,12 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-net --allow-read --allow-env --watch server.ts",
+    "start": "deno run --allow-net --allow-read --allow-env server.ts",
+    "server": "deno serve --parallel --allow-net --allow-read --allow-env server.js",
+    "bundle": "deno compile --allow-net --allow-env --allow-read --env-file --include unreachable_tiles.json server.js"
+  },
+  "imports": {
+    "@danet/handlebars": "jsr:@danet/handlebars@^0.0.3",
+    "@oak/oak": "jsr:@oak/oak@^14.2.0"
+  }
+}
