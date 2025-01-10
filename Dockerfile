@@ -2,6 +2,7 @@ FROM denoland/deno:distroless
 
 WORKDIR /app
 
+COPY deno.json deno.lock ./
 COPY static/ ./static/
 COPY data/ ./data/
 COPY views/ ./views/
