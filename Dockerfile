@@ -10,6 +10,4 @@ COPY server.js ./
 
 COPY LICENSE ./
 
-RUN ["deno", "cache", "server.js"]
-
 CMD [ "serve", "--parallel", "--allow-net", "--allow-read", "--allow-env", "--allow-write", "server.js" ]
