@@ -1,5 +1,5 @@
-import { Handlebars } from "jsr:@danet/handlebars";
-import { Application, Router } from "jsr:@oak/oak@14";
+import { Application, Router } from "@oak/oak";
+import { Handlebars } from "@danet/handlebars";
 
 const unreachableTilesData = [];
 for await (const dirEntry of Deno.readDir("./data/")) {
