@@ -7,6 +7,6 @@
   },
   "imports": {
     "@danet/handlebars": "jsr:@danet/handlebars@^0.0.3",
-    "@oak/oak": "jsr:@oak/oak@^17.1.4"
+    "@oak/oak": "jsr:@oak/oak@^17.1.5"
   }
 }
