@@ -3,7 +3,6 @@
 This is a simple map editor to track unreachable tiles on a map (mercator
 projection).\
 It is built with Deno and Oak, and uses Handlebars for templating.\
-You will need a Mapbox API key to run this project.
 
 > [!NOTE]\
 > No tests were written for this project.\
@@ -12,7 +11,12 @@ You will need a Mapbox API key to run this project.
 > As the feature set is small, I decided to skip the tests for now.\
 > Good enough software ships faster than perfect software. 🤙 #yoco
 
-![](./static/img/screenshot_app.webp)
+---
+
+- [OpenFreeMap](https://openfreemap.org/) makes this possible!
+- [MapLibreJS](https://maplibre.org/) makes this usable!
+
+---![](./static/img/screenshot_app.webp)
 
 ## Data format / JSON Schema
 
@@ -72,7 +76,7 @@ Example:
 ### Frontend
 
 - Handlebars v4
-- Mapbox GL JS v3
+- MapLibre GL JS v5
 - Bootstrap v5
 
 </details>
@@ -81,12 +85,6 @@ Example:
 
 <details>
 <summary>Show instructions</summary>
-
-You need to have a Mapbox API key to run this project. You can get one
-[here](https://www.mapbox.com/).
-
-Copy the `.env.init` file to `.env` and set the `MAPBOX_API_SECRET` variable
-with your API key.
 
 ```bash
 $ deno run --allow-net --allow-read --allow-env server.js
@@ -108,7 +106,7 @@ $ docker run --rm -p 8000:8000 --env-file .env unreachable-tiles-map-editor
 <details>
 <summary>Show Features</summary>
 
-- [x] Renders Mapbox map
+- [x] Renders MapLibre/OpenFreeMap map
 - [x] Users can interact with the map, adding additional polygons of unreachable
       tiles
 - [x] Edit unreachable tiles in multiple tile sizes
