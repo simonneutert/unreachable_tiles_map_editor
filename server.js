@@ -36,9 +36,7 @@ router.get("/map", async function (ctx) {
     ctx.response.redirect("/");
     return;
   } else {
-    ctx.response.body = await ctx.state.handlebars.renderView("map", {
-      mapboxApiSecret: Deno.env.get("MAPBOX_API_SECRET"),
-    });
+    ctx.response.body = await ctx.state.handlebars.renderView("map");
   }
 });
 

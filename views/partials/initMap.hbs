@@ -106,13 +106,12 @@
     });
   }
 
-  // initialize the mapbox map
+  // initialize the maplibre map
 
   var map;
-  var mapboxApiKey = "{{ mapboxApiSecret }}";
   function success(position) {
-    mapboxgl.accessToken = mapboxApiKey;
-    map = new mapboxgl.Map({
+    map = new maplibregl.Map({
+      style: 'https://tiles.openfreemap.org/styles/liberty',
       container: "map",
       center: [position.coords.longitude, position.coords.latitude],
       zoom: 9,
@@ -121,8 +120,8 @@
   }
 
   function error() {
-    mapboxgl.accessToken = mapboxApiKey;
-    map = new mapboxgl.Map({
+    map = new maplibregl.Map({
+      style: 'https://tiles.openfreemap.org/styles/liberty',
       container: "map", // container ID
       center: [8.45, 49.9], // starting position [lng, lat]. Note that lat must be set between -90 and 90
       zoom: 9, // starting zoom
