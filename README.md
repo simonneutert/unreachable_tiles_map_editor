@@ -16,7 +16,9 @@ It is built with Deno and Oak, and uses Handlebars for templating.\
 - [OpenFreeMap](https://openfreemap.org/) makes this possible!
 - [MapLibreJS](https://maplibre.org/) makes this usable!
 
----![](./static/img/screenshot_app.webp)
+---
+
+![](./static/img/screenshot_app.webp)
 
 ## Data format / JSON Schema
 
