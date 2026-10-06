@@ -11,7 +11,14 @@ serve:
 compile:
   deno compile --allow-net --allow-env --allow-read --env-file --include unreachable_tiles.json server.js
 
-publish_ghcr:
+podman_publish_ghcr:
+  podman manifest rm --ignore ghcr.io/simonneutert/unreachable_tiles_map_editor:main
+  podman manifest create ghcr.io/simonneutert/unreachable_tiles_map_editor:main
+  podman build --platform linux/amd64 --manifest ghcr.io/simonneutert/unreachable_tiles_map_editor:main .
+  podman build --platform linux/arm64 --manifest ghcr.io/simonneutert/unreachable_tiles_map_editor:main .
+  podman manifest push --all ghcr.io/simonneutert/unreachable_tiles_map_editor:main docker://ghcr.io/simonneutert/unreachable_tiles_map_editor:main
+
+docker_publish_ghcr:
   docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/simonneutert/unreachable_tiles_map_editor:main --push .
 
 lint:
